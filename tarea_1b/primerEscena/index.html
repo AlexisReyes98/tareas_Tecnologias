@@ -167,6 +167,11 @@
             renderer.setSize( window.innerWidth, window.innerHeight );
             document.body.appendChild( renderer.domElement );
 
+            const color = 0x47d85f;
+            const intensity = 1;
+            const light = new THREE.AmbientLight(color, intensity);
+            scene.add(light);
+
             new OrbitControls( camera, renderer.domElement );
         }
 
