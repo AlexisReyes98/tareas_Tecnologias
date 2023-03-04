@@ -86,20 +86,20 @@
                 meshes.push( mesh );
             }
 
-            // el contenedor, si necesitas mover el plano solo mueve esto
+            // El contenedor  solo mueve esto
             shadowGroup = new THREE.Group();
             shadowGroup.position.y = - 0.3;
             scene.add( shadowGroup );
 
-            // el objetivo de renderizado que mostrará las sombras en la textura del plano
+            // El objetivo de renderizado que mostrará las sombras en la textura del plano
             renderTarget = new THREE.WebGLRenderTarget( 512, 512 );
             renderTarget.texture.generateMipmaps = false;
 
-            // el objetivo de renderizado que mostrará las sombras en la textura del plano
+            // El objetivo de renderizado que mostrará las sombras en la textura del plano
             renderTargetBlur = new THREE.WebGLRenderTarget( 512, 512 );
             renderTargetBlur.texture.generateMipmaps = false;
 
-            // hacer un plano y ponerlo boca arriba
+            // Hace un plano y lo pone boca arriba
             const planeGeometry = new THREE.PlaneGeometry( PLANE_WIDTH, PLANE_HEIGHT ).rotateX( Math.PI / 2 );
             const planeMaterial = new THREE.MeshBasicMaterial( {
                 map: renderTarget.texture,
@@ -108,19 +108,19 @@
                 depthWrite: false,
             } );
             plane = new THREE.Mesh( planeGeometry, planeMaterial );
-            // asegúrese de que se represente después de fillPlane
+            // Se asegura de que se represente después de fillPlane
             plane.renderOrder = 1;
             shadowGroup.add( plane );
 
             // ¡la textura está invertida!
             plane.scale.y = - 1;
 
-            // el plano sobre el que desenfocar la textura
+            // El plano sobre el que desenfocar la textura
             blurPlane = new THREE.Mesh( planeGeometry );
             blurPlane.visible = false;
             shadowGroup.add( blurPlane );
 
-            // el plano con el color del suelo
+            // El plano con el color del suelo
             const fillPlaneMaterial = new THREE.MeshBasicMaterial( {
                 color: state.plane.color,
                 opacity: state.plane.opacity,
@@ -131,14 +131,14 @@
             fillPlane.rotateX( Math.PI );
             shadowGroup.add( fillPlane );
 
-            // la cámara para renderizar el material de profundidad desde
+            // La cámara para renderizar el material de profundidad desde
             shadowCamera = new THREE.OrthographicCamera( - PLANE_WIDTH / 2, PLANE_WIDTH / 2, PLANE_HEIGHT / 2, - PLANE_HEIGHT / 2, 0, CAMERA_HEIGHT );
-            shadowCamera.rotation.x = Math.PI / 2; // hacer que la cámara mire hacia arriba
+            shadowCamera.rotation.x = Math.PI / 2; // Hace que la cámara mire hacia arriba
             shadowGroup.add( shadowCamera );
 
             cameraHelper = new THREE.CameraHelper( shadowCamera );
 
-            // como MeshDepthMaterial, pero va de negro a transparente
+            // Como MeshDepthMaterial, pero va de negro a transparente
             depthMaterial = new THREE.MeshDepthMaterial();
             depthMaterial.userData.darkness = { value: state.shadow.darkness };
             depthMaterial.onBeforeCompile = function ( shader ) {
@@ -186,7 +186,7 @@
         function blurShadow( amount ) {
             blurPlane.visible = true;
 
-            // difuminar horizontalmente y dibujar en el renderTargetBlur
+            // Se ifuminan horizontalmente y se dibuja en el renderTargetBlur
             blurPlane.material = horizontalBlurMaterial;
             blurPlane.material.uniforms.tDiffuse.value = renderTarget.texture;
             horizontalBlurMaterial.uniforms.h.value = amount * 1 / 256;
@@ -194,7 +194,7 @@
             renderer.setRenderTarget( renderTargetBlur );
             renderer.render( blurPlane, shadowCamera );
 
-            // difuminar verticalmente y dibujar en el renderTarget principal
+            // Se difumina verticalmente y se dibuja en el renderTarget principal
             blurPlane.material = verticalBlurMaterial;
             blurPlane.material.uniforms.tDiffuse.value = renderTargetBlur.texture;
             verticalBlurMaterial.uniforms.v.value = amount * 1 / 256;
@@ -213,33 +213,33 @@
                 mesh.rotation.y += 0.02;
             } );
 
-            // elimina el fondo
+            // Elimina el fondo
             const initialBackground = scene.background;
             scene.background = null;
 
-            // fuerza el material de profundidad a todo
+            // Fuerza el material de profundidad a todo
             cameraHelper.visible = false;
             scene.overrideMaterial = depthMaterial;
 
-            // Establecer renderizador claro alfa
+            // Establece el renderizador claro alfa
             const initialClearAlpha = renderer.getClearAlpha();
             renderer.setClearAlpha( 0 );
 
-            // renderizar al objetivo de renderizado para obtener las profundidades
+            // Renderiza al objetivo de renderizado para obtener las profundidades
             renderer.setRenderTarget( renderTarget );
             renderer.render( scene, shadowCamera );
 
-            // y restablecer el material de anulación
+            // Restablece el material de anulación
             scene.overrideMaterial = null;
             cameraHelper.visible = true;
 
             blurShadow( state.shadow.blur );
 
-            // una segunda pasada para reducir los artefactos
+            // Una segunda pasada para reducir los artefactos
             // (0.4 es la cantidad mínima de desenfoque para que desaparezcan los artefactos)
             blurShadow( state.shadow.blur * 0.4 );
 
-            // restablecer y renderizar la escena normal
+            // Restablece y renderiza la escena normal
             renderer.setRenderTarget( null );
             renderer.setClearAlpha( initialClearAlpha );
             scene.background = initialBackground;

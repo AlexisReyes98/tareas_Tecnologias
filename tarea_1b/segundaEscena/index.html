@@ -120,23 +120,6 @@
                 }
             }
 
-            new MTLLoader()
-					.setPath( '../assets/male02/' )
-					.load( 'male02.mtl', function ( materials ) {
-
-						materials.preload();
-
-						new OBJLoader()
-							.setMaterials( materials )
-							.setPath( '../assets/male02/' )
-							.load( 'male02.obj', function ( object ) {
-                                object.position.y = - 50;
-                                object.scale.y = 20;
-								scene.add( object );
-							}, onProgress );
-
-					} );
-
             renderer = new THREE.WebGLRenderer( { antialias: true } );
             renderer.setPixelRatio( window.devicePixelRatio );
             renderer.setSize( window.innerWidth, window.innerHeight );
