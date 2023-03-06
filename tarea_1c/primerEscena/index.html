@@ -13,126 +13,129 @@
 <body>
     <canvas id = "renderCanvas"></canvas>
     <script type = "text/javascript">
-    var canvas = document.getElementById("renderCanvas");
-    var engine = new BABYLON.Engine(canvas, true);
-    
-    var createScene  = function() {
-        var scene = new BABYLON.Scene(engine);
-        scene.clearColor = new BABYLON.Color3(0, 1, 0);
+        var canvas = document.getElementById("renderCanvas");
+        var engine = new BABYLON.Engine(canvas, true);
         
-        var camera = new BABYLON.ArcRotateCamera("Camera", 1, 0.8, 10, new BABYLON.Vector3(0, 0, 0), scene);
-        camera.attachControl(canvas, true);
+        var createScene  = function() {
+            var scene = new BABYLON.Scene(engine);
+            scene.clearColor = new BABYLON.Color3(1, 0, 0);
+            
+            var camera = new BABYLON.ArcRotateCamera("Camera", 1, 0.8, 10, new BABYLON.Vector3(0, 0, 0), scene);
+            camera.attachControl(canvas, true);
+            
+            var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+            light.intensity = 0.7;	
+            
+            var pl = new BABYLON.PointLight("pl", BABYLON.Vector3.Zero(), scene);
+            pl.diffuse = new BABYLON.Color3(1, 1, 1);
+            pl.specular = new BABYLON.Color3(1, 1, 1);
+            pl.intensity = 0.8;
+            
+            var box = BABYLON.Mesh.CreateBox("box", '3', scene);
+            box.position = new BABYLON.Vector3(5,0,0);
+
+            var torus = BABYLON.Mesh.CreateTorus("torus", 5, 1, 10, scene, false);
+            torus.position = new BABYLON.Vector3(-6,0,0);
+
+            var cylinder = BABYLON.Mesh.CreateCylinder("cylinder", 3, 3, 3, 6, 1, scene, false);
+            cylinder.position = new BABYLON.Vector3(0, 0, 0);
+
+            var animationBox = new BABYLON.Animation("myAnimation", "scaling.x", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+
+            var animationTorus = new BABYLON.Animation("myAnimation1", "scaling.z", 10, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+
+            var animationCylinder = new BABYLON.Animation("myAnimation2", "scaling.z", 20, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+
+            // Una matriz con todas las claves de animación
+            var keys = [];
+
+            // En la clave de animación 0, el valor de la escala es "1"
+            keys.push({
+                frame: 0,
+                value: 1
+            });
+
+            // En la clave de animación 20, el valor de escalado es "0.2"
+            keys.push({
+                frame: 20,
+                value: 0.2
+            });
+
+            keys.push({
+                frame: 60,
+                value: 0.4
+            });
+
+            // En la clave de animación 100, el valor de la escala es "1"
+            keys.push({
+                frame: 100,
+                value: 1
+            });
+            
+            animationBox.setKeys(keys);
+            box.animations = [];
+            box.animations.push(animationBox);			
+            scene.beginAnimation(box, 0, 100, true); 
+
+            // Una matriz con todas las claves de animación
+            var keys = []; 
+
+            // En la clave de animación 0, el valor de la escala es "1"
+            keys.push({
+                frame: 0,
+                value: 1
+            });
+
+            // En la clave de animación 60, el valor de escalado es "0.2"
+            keys.push({
+                frame: 60,
+                value: 0.2
+            });
+
+            // En la clave de animación 100, el valor de la escala es "1"
+            keys.push({
+                frame: 100,
+                value: 1
+            });
+
+            animationTorus.setKeys(keys);
+            torus.animations = [];
+            torus.animations.push(animationTorus);			
+            scene.beginAnimation(torus, 0, 100, true); 
+
+            // Una matriz con todas las claves de animación
+            var keys = []; 
+
+            // En la clave de animación 0, el valor de la escala es "1"
+            keys.push({
+                frame: 0,
+                value: 1
+            });
+
+            // En la clave de animación 60, el valor de escalado es "0.2"
+            keys.push({
+                frame: 60,
+                value: 0.2
+            });
+
+            // En la clave de animación 100, el valor de la escala es "1"
+            keys.push({
+                frame: 100,
+                value: 1
+            });
+
+            animationCylinder.setKeys(keys);
+            cylinder.animations = [];
+            cylinder.animations.push(animationCylinder);			
+            scene.beginAnimation(cylinder, 0, 100, true); 
+
+            return scene;
+        };
         
-        var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
-        light.intensity = 0.7;	
-        
-        var pl = new BABYLON.PointLight("pl", BABYLON.Vector3.Zero(), scene);
-        pl.diffuse = new BABYLON.Color3(1, 1, 1);
-        pl.specular = new BABYLON.Color3(1, 1, 1);
-        pl.intensity = 0.8;
-        
-        var box = BABYLON.Mesh.CreateBox("box", '3', scene);
-        box.position = new BABYLON.Vector3(-10,0,0);
-
-        var box1 = BABYLON.Mesh.CreateBox("box1", '3', scene);
-        box1.position = new BABYLON.Vector3(0,0,0);
-
-        var cylinder = BABYLON.Mesh.CreateCylinder("cylinder", 3, 3, 3, 6, 1, scene, false);
-        cylinder.position = new BABYLON.Vector3(5, 0, 0);
-
-        var animationBox = new BABYLON.Animation("myAnimation", "scaling.x", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-
-        var animationBox1 = new BABYLON.Animation("myAnimation1", "scaling.z", 10, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-
-        var animationCylinder = new BABYLON.Animation("myAnimation2", "scaling.z", 10, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-
-          // An array with all animation keys
-        var keys = [];
-
-          //At the animation key 0, the value of scaling is "1"
-        keys.push({
-            frame: 0,
-            value: 1
+        var scene = createScene();
+        engine.runRenderLoop(function() {
+            scene.render();
         });
-
-          //At the animation key 20, the value of scaling is "0.2"
-        keys.push({
-            frame: 20,
-            value: 0.2
-        });
-
-        keys.push({
-            frame: 60,
-            value: 0.4
-        });
-
-          //At the animation key 100, the value of scaling is "1"
-        keys.push({
-            frame: 100,
-            value: 1
-        });
-        
-        animationBox.setKeys(keys);
-        box.animations = [];
-        box.animations.push(animationBox);			
-        scene.beginAnimation(box, 0, 100, true); 
-
-          // An array with all animation keys
-        var keys = []; 
-
-          //At the animation key 0, the value of scaling is "1"
-        keys.push({
-            frame: 0,
-            value: 1
-        });
-
-          //At the animation key 20, the value of scaling is "0.2"
-        keys.push({
-            frame: 60,
-            value: 0.2
-        });
-
-          //At the animation key 100, the value of scaling is "1"
-        keys.push({
-            frame: 100,
-            value: 1
-        });
-        animationBox1.setKeys(keys);
-        box1.animations = [];
-        box1.animations.push(animationBox1);			
-        scene.beginAnimation(box1, 0, 100, true); 
-
-          // An array with all animation keys
-        var keys = []; 
-
-          //At the animation key 0, the value of scaling is "1"
-        keys.push({
-            frame: 0,
-            value: 1
-        });
-
-          //At the animation key 20, the value of scaling is "0.2"
-        keys.push({
-            frame: 60,
-            value: 0.2
-        });
-
-          //At the animation key 100, the value of scaling is "1"
-        keys.push({
-            frame: 100,
-            value: 1
-        });
-        animationCylinder.setKeys(keys);
-        cylinder.animations = [];
-        cylinder.animations.push(animationCylinder);			
-        scene.beginAnimation(cylinder, 0, 100, true); 
-
-        return scene;
-    };
-    var scene = createScene();
-    engine.runRenderLoop(function() {
-        scene.render();
-    });
     </script>
 </body>
 </html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Babylon.js sample code</title>
+
+        <!-- Babylon.js -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+        <script src="https://assets.babylonjs.com/generated/Assets.js"></script>
+        <script src="https://preview.babylonjs.com/ammo.js"></script>
+        <script src="https://preview.babylonjs.com/cannon.js"></script>
+        <script src="https://preview.babylonjs.com/Oimo.js"></script>
+        <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+        <script src="https://preview.babylonjs.com/babylon.js"></script>
+        <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+        <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+        <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+        <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+        <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+        <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+        <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+
+        <style>
+            html, body {
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #renderCanvas {
+                width: 100%;
+                height: 100%;
+                touch-action: none;
+            }
+        </style>
+    </head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+        var canvas = document.getElementById("renderCanvas");
+
+        var startRenderLoop = function (engine, canvas) {
+            engine.runRenderLoop(function () {
+                if (sceneToRender && sceneToRender.activeCamera) {
+                    sceneToRender.render();
+                }
+            });
+        }
+
+        var engine = null;
+        var scene = null;
+        var sceneToRender = null;
+        var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true,  disableWebGL2Support: false}); };
+        var createScene = function () {
+            var scene = new BABYLON.Scene(engine);
+            var camera = new BABYLON.ArcRotateCamera("cam", 1.65, 1.56, 20, BABYLON.Vector3.Zero());
+            scene.clearColor = new BABYLON.Color3(0, 0, 0);
+        
+            camera.wheelDeltaPercentage = 0.01;
+            camera.attachControl(canvas, true);
+            camera.upperBetaLimit = 1.75;
+        
+            // Material
+            var groundMat = new BABYLON.PBRMaterial("groundMat", scene);
+            groundMat.albedoColor  = new BABYLON.Color4(63/255, 52/255, 97/255, 1);
+            groundMat.metallic = 0;
+            groundMat.roughness = 0.4;
+            groundMat.environmentIntensity = 0;
+        
+            // Ground
+            var ground = BABYLON.Mesh.CreatePlane("ground", 500.0, scene);
+            ground.position = new BABYLON.Vector3(0, -10, 0);
+            ground.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
+            ground.material = groundMat;
+        
+            // Lights
+            var light = new BABYLON.PointLight("pointLight", new BABYLON.Vector3(-17, 68, -5), scene);
+            light.intensity = 1000;
+            light.includedOnlyMeshes.push(ground);
+            
+            // Environment
+            var hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData("https://playground.babylonjs.com/textures/Studio_Softbox_2Umbrellas_cube_specular.dds", scene);
+            hdrTexture.name = "envTex";
+            hdrTexture.gammaSpace = false;
+            hdrTexture.setReflectionTextureMatrix(BABYLON.Matrix.RotationY(2.4));
+            scene.environmentTexture = hdrTexture; 
+        
+            var ccMask = new BABYLON.Texture("https://models.babylonjs.com/Demos/shaderBall/ShaderBallMat_clearCoat.png", scene, undefined, false);
+        
+            Promise.all([
+                BABYLON.SceneLoader.AppendAsync("https://models.babylonjs.com/Demos/shaderBall/BabylonShaderBall_Simple.gltf")
+            ]).then(function() {
+        
+                // Enable clear coat on material
+                var mainMat = scene.getMaterialByName("ShaderBallMat");
+                mainMat.clearCoat.isEnabled = true;
+                mainMat.clearCoat.texture = ccMask;
+        
+                // Set up new rendering pipeline
+                var pipeline = new BABYLON.DefaultRenderingPipeline("default", true, scene);
+        
+                // Tone mapping
+                pipeline.toneMappingEnabled = true;
+                pipeline.toneMappingType = BABYLON.ImageProcessingConfiguration.TONEMAPPING_ACES;
+                pipeline.exposure = 1;
+        
+                pipeline.fxaaEnabled = true;
+        
+                // Glow Layer
+                var gl = new BABYLON.GlowLayer("glow", scene, { 
+                    mainTextureFixedSize: 1024,
+                    blurKernelSize: 64
+                });
+                gl.intensity = 0.8;
+            });
+            
+            return scene;
+        };
+        
+                window.initFunction = async function() {
+                    
+                    
+                    var asyncEngineCreation = async function() {
+                        try {
+                        return createDefaultEngine();
+                        } catch(e) {
+                        console.log("the available createEngine function failed. Creating the default engine instead");
+                        return createDefaultEngine();
+                        }
+                    }
+
+                    window.engine = await asyncEngineCreation();
+        if (!engine) throw 'engine should not be null.';
+        startRenderLoop(engine, canvas);
+        window.scene = createScene();};
+        initFunction().then(() => {sceneToRender = scene                    
+        });
+
+        // Resize
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+    </script>
+</body>
+</html>

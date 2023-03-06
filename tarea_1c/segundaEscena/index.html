@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarea 1c - segunda escena</title>
+    <!-- Babylon.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+    <script src="https://assets.babylonjs.com/generated/Assets.js"></script>
+    <script src="https://preview.babylonjs.com/ammo.js"></script>
+    <script src="https://preview.babylonjs.com/cannon.js"></script>
+    <script src="https://preview.babylonjs.com/Oimo.js"></script>
+    <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+    <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+    <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+
+    <style>
+        html, body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+        var canvas = document.getElementById("renderCanvas");
+
+        var startRenderLoop = function (engine, canvas) {
+            engine.runRenderLoop(function () {
+                if (sceneToRender && sceneToRender.activeCamera) {
+                    sceneToRender.render();
+                }
+            });
+        }
+
+        var engine = null;
+        var scene = null;
+        var sceneToRender = null;
+        var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true,  disableWebGL2Support: false}); };
+        var createScene = function () {
+            // This creates a basic Babylon Scene object (non-mesh)
+            var scene = new BABYLON.Scene(engine);
+
+            engine.displayLoadingUI();
+
+            scene.enablePhysics(new BABYLON.Vector3(0, -9.8, 0), new BABYLON.CannonJSPlugin);
+
+            var camera = new BABYLON.ArcRotateCamera("camera", 2.34, 1.5, 135, new BABYLON.Vector3(-160, 30, 160), scene);
+
+            camera.upperAlphaLimit = 2.81;
+            camera.lowerAlphaLimit = 1.95;
+            camera.upperBetaLimit = 1.65;
+            camera.upperRadiusLimit = 218;
+            camera.lowerRadiusLimit = 100;
+
+            // This attaches the camera to the canvas
+            camera.attachControl(canvas, true);
+
+            scene.environmentTexture = new BABYLON.HDRCubeTexture("https://BabylonJS.github.io/Assets/environments/umhlanga_sunrise_1k.hdr", scene, 128, false, true, false, true);
+
+            var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:1000.0}, scene);
+            var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+            skyboxMaterial.backFaceCulling = false;
+            skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("https://BabylonJS.github.io/Assets/environments/toySky/toySky", scene);
+            skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+            skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+            skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+            skybox.material = skyboxMaterial;
+
+            // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
+            var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+
+            // Default intensity is 1. Let's dim the light a small amount
+            light.intensity = 0.7;
+
+            BABYLON.SceneLoader.ImportMesh("stud", "https://BabylonJS.github.io/Assets/meshes/", "stud.glb", scene, function(newMeshes){
+                let parent = newMeshes[0];
+                let stud = parent.getChildMeshes()[0];
+                stud.setParent(null);
+                parent.dispose();
+
+                BABYLON.NodeMaterial.ParseFromSnippetAsync("H1SHMG#1", scene).then(nodeMaterial => {
+                    stud.material = nodeMaterial;
+                    engine.hideLoadingUI();
+                    
+                    const song = new BABYLON.Sound("pirateSong", "https://BabylonJS.github.io/Assets/sound/pirateFun.mp3", scene, null, { loop: true, autoplay: true });
+                });
+
+                let oceanSize = 64;
+                let studDistance = 9;
+                let studArray = [];
+
+                for(let x = -1 * (oceanSize/2); x < oceanSize/2; x++){
+                    for(let z = -1 * (oceanSize/2); z < oceanSize/2; z++){
+                        let matrix = BABYLON.Matrix.Translation(x*studDistance, 0, z*studDistance);
+                        studArray.push(matrix);
+                    }
+                }
+
+                stud.thinInstanceAdd(studArray);
+            });
+
+            let shipPostion = new BABYLON.Vector3(-160, 0, 160);
+
+            var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 50}, scene);
+            var ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 200, height: 200}, scene);
+            var box = BABYLON.MeshBuilder.CreateBox("box", {size: 25}, scene);
+
+            sphere.material = new BABYLON.StandardMaterial("sphereMat", scene);
+            sphere.material.diffuseTexture = new BABYLON.Texture("textures/amiga.jpg");
+
+            sphere.position.copyFrom(shipPostion);
+            ground.position.copyFrom(shipPostion);
+            box.position.copyFrom(shipPostion);
+
+            sphere.position.y += 25;
+            box.position.y -= 50;
+
+            sphere.physicsImpostor = new BABYLON.PhysicsImpostor(sphere, BABYLON.PhysicsImpostor.SphereImpostor, {mass:1, friction: 10}, scene);
+            ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, {mass:0}, scene);
+            box.physicsImpostor = new BABYLON.PhysicsImpostor(box, BABYLON.PhysicsImpostor.BoxImpostor, {mass: 200}, scene);
+
+            let joint1 = new BABYLON.PhysicsJoint(BABYLON.PhysicsJoint.LockJoint, {});
+
+            sphere.physicsImpostor.addJoint(box.physicsImpostor, joint1);
+
+            let magnitude = 2000;
+
+            box.physicsImpostor.applyImpulse(new BABYLON.Vector3( -0.5 + Math.random(), 0, -0.5 + Math.random()).scale(magnitude), box.getAbsolutePosition());
+
+            scene.onBeforeRenderObservable.add(function(){
+                sphere.position = new BABYLON.Vector3(-160, 25, 160);
+                let velocity = sphere.physicsImpostor.getAngularVelocity();
+                velocity.y = 0;
+                sphere.physicsImpostor.setAngularVelocity(velocity);
+            });
+
+            let interval = setInterval(function(){
+                box.physicsImpostor.applyImpulse(new BABYLON.Vector3( -0.5 + Math.random(), 0, -0.5 + Math.random()).scale(magnitude), box.getAbsolutePosition());
+            }, 4000);
+
+            scene.onDisposeObservable.add(function(){
+                clearInterval(interval);
+            });
+
+            BABYLON.SceneLoader.ImportMesh("", "https://BabylonJS.github.io/Assets/meshes/", "blackPearl.glb", scene, function(newMeshes){
+                newMeshes[0].position.copyFrom(shipPostion);
+                newMeshes[0].setParent(sphere);
+            });
+
+            sphere.visibility = 0;
+            ground.visibility = 0;
+            box.visibility = 0;
+
+            return scene;
+        };
+        
+        window.initFunction = async function() {
+            var asyncEngineCreation = async function() {
+                try {
+                    return createDefaultEngine();
+                } catch(e) {
+                    console.log("the available createEngine function failed. Creating the default engine instead");
+                    return createDefaultEngine();
+                    }
+            }
+
+            window.engine = await asyncEngineCreation();
+            if (!engine) throw 'engine should not be null.';
+            startRenderLoop(engine, canvas);
+            window.scene = createScene();
+        };
+
+        initFunction().then(() => {
+            sceneToRender = scene
+        });
+
+        // Resize
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+    </script>
+</body>
+</html>
