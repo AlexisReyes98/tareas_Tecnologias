@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Babylon.js sample code</title>
+
+    <!-- Babylon.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+    <script src="https://assets.babylonjs.com/generated/Assets.js"></script>
+    <script src="https://preview.babylonjs.com/ammo.js"></script>
+    <script src="https://preview.babylonjs.com/cannon.js"></script>
+    <script src="https://preview.babylonjs.com/Oimo.js"></script>
+    <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+    <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+    <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+
+    <style>
+        html, body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+    </style>
+    </head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+        var canvas = document.getElementById("renderCanvas");
+
+        var startRenderLoop = function (engine, canvas) {
+            engine.runRenderLoop(function () {
+                if (sceneToRender && sceneToRender.activeCamera) {
+                    sceneToRender.render();
+                }
+            });
+        }
+
+        var engine = null;
+        var scene = null;
+        var sceneToRender = null;
+        var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true,  disableWebGL2Support: false}); };
+                var createScene = function () {
+
+        // This creates a basic Babylon Scene object (non-mesh)
+        var scene = new BABYLON.Scene(engine);
+
+        // Camera
+        var camera = new BABYLON.UniversalCamera("UniversalCamera", new BABYLON.Vector3(0, 0, -5), scene);
+        camera.setTarget(BABYLON.Vector3.Zero());
+        camera.attachControl(canvas, false);
+
+        // Scene color
+        scene.clearColor = new BABYLON.Color3(0.0, 0.0, 0.0);
+
+        // Set up new rendering pipeline
+        var pipeline = new BABYLON.DefaultRenderingPipeline("default", true, scene);
+
+        // Tone mapping
+        scene.imageProcessingConfiguration.toneMappingEnabled = true;
+        scene.imageProcessingConfiguration.toneMappingType = BABYLON.ImageProcessingConfiguration.TONEMAPPING_ACES;
+        scene.imageProcessingConfiguration.exposure = 1;
+
+        // Bloom
+        pipeline.bloomEnabled = true;
+        pipeline.bloomThreshold = 0.7;
+        pipeline.bloomWeight = 2;
+        pipeline.bloomKernel = 64;
+        pipeline.bloomScale = 0.5;
+
+        // Spawn particle system on key press
+        document.addEventListener('keydown', toggleEmission);
+
+        // Remove listeners when scene disposed
+        scene.onDisposeObservable.add(function()
+        {
+            document.removeEventListener('keydown', toggleEmission);
+        });
+
+        // Set up animation sheet
+        var setupAnimationSheet = function(system, texture, width, height, numSpritesWidth, numSpritesHeight, animationSpeed, isRandom) 
+        {
+            // Assign animation parameters
+            system.isAnimationSheetEnabled = true;
+            system.particleTexture = new BABYLON.Texture(texture, scene, false, false);
+            system.spriteCellWidth = width / numSpritesWidth;
+            system.spriteCellHeight = height / numSpritesHeight;
+            var numberCells = numSpritesWidth * numSpritesHeight;
+            system.startSpriteCellID = 0;
+            system.endSpriteCellID = numberCells - 1;
+            system.spriteCellChangeSpeed = animationSpeed;    
+            system.spriteRandomStartCell = isRandom; 
+            system.updateSpeed = 1/30;      
+        }
+
+        // Code
+        var line = BABYLON.ParticleHelper.CreateDefault(new BABYLON.Vector3(0, 3, 0), 300);
+        line.createBoxEmitter(new BABYLON.Vector3(0, -1, 0), new BABYLON.Vector3(0, -1, 0), new BABYLON.Vector3(-5, 0, -0.5), new BABYLON.Vector3(5, 0, 0.5));
+        line.minLifeTime = 1;
+        line.maxLifeTime = 1.5;
+        line.minSize = 0.4;
+        line.maxSize = 0.4;
+        line.emitRate = 50;
+        line.minEmitPower = 4;
+        line.maxEmitPower = 4;
+        line.addColorGradient(0, new BABYLON.Color4(0.0, 0.1, 0.0, 1));
+        line.addColorGradient(1, new BABYLON.Color4(0.0, 0.1, 0.0, 1));
+        line.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
+
+        // Sub emitters
+        var code = new BABYLON.SubEmitter(new BABYLON.ParticleHelper.CreateDefault(new BABYLON.Vector3(0, 60, 0), 300));
+        setupAnimationSheet(code.particleSystem, "https://raw.githubusercontent.com/PatrickRyanMS/BabylonJStextures/master/ParticleSystems/Code/characters.png", 512, 512, 6, 6, 0, true);
+        code.particleSystem.emitter = new BABYLON.AbstractMesh("", scene);
+        code.particleSystem.createSphereEmitter(0.01, 1);
+        code.particleSystem.minLifeTime = 4;
+        code.particleSystem.maxLifeTime = 6;
+        code.particleSystem.minEmitPower = 0;
+        code.particleSystem.maxEmitPower = 0;
+        code.particleSystem.emitRate = 15;
+        code.particleSystem.minSize = 0.15;
+        code.particleSystem.maxSize = 0.15;
+        code.particleSystem.addColorGradient(0.0, new BABYLON.Color4(225/255, 255/255, 220/255, 1));
+        code.particleSystem.addColorGradient(0.2, new BABYLON.Color4(41/255, 208/255, 19/255, 1));
+        code.particleSystem.addColorGradient(1.0, new BABYLON.Color4(20/255, 97/255, 10/255, 0));
+        code.type = BABYLON.SubEmitterType.ATTACHED;
+        code.particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
+
+        line.subEmitters = [code];
+
+        // Start
+        var toggle = true;
+        line.start();
+
+        function toggleEmission()
+        {
+            if(event.keyCode == 32) 
+            {
+                if (toggle == false)
+                {
+                    line.start();
+                    toggle = !toggle;
+                }
+                else        
+                {
+                    line.stop();
+                    toggle = !toggle;
+                }
+            } 
+        }
+
+        return scene;
+
+        };
+                window.initFunction = async function() {
+                    
+                    
+                    var asyncEngineCreation = async function() {
+                        try {
+                        return createDefaultEngine();
+                        } catch(e) {
+                        console.log("the available createEngine function failed. Creating the default engine instead");
+                        return createDefaultEngine();
+                        }
+                    }
+
+                    window.engine = await asyncEngineCreation();
+        if (!engine) throw 'engine should not be null.';
+        startRenderLoop(engine, canvas);
+        window.scene = createScene();};
+        initFunction().then(() => {sceneToRender = scene                    
+        });
+
+        // Resize
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+    </script>
+</body>
+</html>
