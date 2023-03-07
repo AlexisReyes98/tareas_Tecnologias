@@ -55,7 +55,7 @@
         var sceneToRender = null;
         var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true,  disableWebGL2Support: false}); };
         var createScene = function () {
-            // This creates a basic Babylon Scene object (non-mesh)
+            // Esto crea un objeto básico de escena de Babylon (sin malla)
             var scene = new BABYLON.Scene(engine);
 
             engine.displayLoadingUI();
@@ -70,7 +70,7 @@
             camera.upperRadiusLimit = 218;
             camera.lowerRadiusLimit = 100;
 
-            // This attaches the camera to the canvas
+            // Esto adjunta la cámara al lienzo
             camera.attachControl(canvas, true);
 
             scene.environmentTexture = new BABYLON.HDRCubeTexture("https://BabylonJS.github.io/Assets/environments/umhlanga_sunrise_1k.hdr", scene, 128, false, true, false, true);
@@ -84,10 +84,10 @@
             skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
             skybox.material = skyboxMaterial;
 
-            // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
+            // Esto crea una luz, apuntando 0,1,0 - al cielo (sin malla)
             var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
 
-            // Default intensity is 1. Let's dim the light a small amount
+            // La intensidad por defecto es 1. Se atenua la luz un poco.
             light.intensity = 0.7;
 
             BABYLON.SceneLoader.ImportMesh("stud", "https://BabylonJS.github.io/Assets/meshes/", "stud.glb", scene, function(newMeshes){
@@ -100,7 +100,7 @@
                     stud.material = nodeMaterial;
                     engine.hideLoadingUI();
                     
-                    const song = new BABYLON.Sound("pirateSong", "https://BabylonJS.github.io/Assets/sound/pirateFun.mp3", scene, null, { loop: true, autoplay: true });
+                    const song = new BABYLON.Sound("pirateSong", "sound/pirateCaribe.m4a", scene, null, { loop: true, autoplay: true });
                 });
 
                 let oceanSize = 64;
@@ -192,7 +192,7 @@
             sceneToRender = scene
         });
 
-        // Resize
+        // Redimensionar
         window.addEventListener("resize", function () {
             engine.resize();
         });
