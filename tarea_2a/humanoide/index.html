@@ -3,10 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="assets/main.css">
     <title>Tarea 2a - humanoide</title>
 </head>
 <body>
-    
+    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three/build/three.module.js",
+                "ttps://unpkg.com/three/examples/": "./jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import Stats from 'https://unpkg.com/three/examples/jsm/libs/stats.module.js';
+        import { GUI } from 'https://unpkg.com/three/examples/jsm/libs/lil-gui.module.min.js';
+        import { OrbitControls } from 'https://unpkg.com/three/examples/jsm/controls/OrbitControls.js';
+        import { GLTFLoader } from 'https://unpkg.com/three/examples/jsm/loaders/GLTFLoader.js';
+
+        let scene, renderer, camera, stats;
+        let model, skeleton, mixer, clock;
+
+        const allActions = [];
+        const baseActions = {
+            idle: { weight: 1 },
+            walk: { weight: 0 },
+            run: { weight: 0 }
+        };
+        const additiveActions = {
+            sneak_pose: { weight: 0 },
+            sad_pose: { weight: 0 },
+            agree: { weight: 0 },
+            headShake: { weight: 0 }
+        };
+        let numAnimations;
+
+        init();
+
+        function init() {
+            clock = new THREE.Clock();
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color( 0x6eb9eb );
+            scene.fog = new THREE.Fog( 0x6eb9eb, 10, 50 );
+
+            const hemiLight = new THREE.HemisphereLight( 0xffffff, 0x444444 );
+            hemiLight.position.set( 0, 20, 0 );
+            scene.add( hemiLight );
+
+            const dirLight = new THREE.DirectionalLight( 0xffffff );
+            dirLight.position.set( 3, 10, 10 );
+            dirLight.castShadow = true;
+            dirLight.shadow.camera.top = 2;
+            dirLight.shadow.camera.bottom = - 2;
+            dirLight.shadow.camera.left = - 2;
+            dirLight.shadow.camera.right = 2;
+            dirLight.shadow.camera.near = 0.1;
+            dirLight.shadow.camera.far = 40;
+            scene.add( dirLight );
+
+            // Suelo
+            const mesh = new THREE.Mesh( new THREE.PlaneGeometry( 100, 100 ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: false } ) );
+            mesh.rotation.x = - Math.PI / 2;
+            mesh.receiveShadow = true;
+            scene.add( mesh );
+
+            const loader = new GLTFLoader();
+            loader.load( 'assets/Xbot.glb', function ( gltf ) {
+                model = gltf.scene;
+                scene.add( model );
+
+                model.traverse( function ( object ) {
+                    if ( object.isMesh ) object.castShadow = true;
+                } );
+                skeleton = new THREE.SkeletonHelper( model );
+                skeleton.visible = false;
+                scene.add( skeleton );
+
+                const animations = gltf.animations;
+                mixer = new THREE.AnimationMixer( model );
+                numAnimations = animations.length;
+                for ( let i = 0; i !== numAnimations; ++ i ) {
+                    let clip = animations[ i ];
+                    const name = clip.name;
+                    if ( baseActions[ name ] ) {
+                        const action = mixer.clipAction( clip );
+                        activateAction( action );
+                        baseActions[ name ].action = action;
+                        allActions.push( action );
+                    } else if ( additiveActions[ name ] ) {
+                        // Clip aditivo y se elimina el marco de referencia
+                        THREE.AnimationUtils.makeClipAdditive( clip );
+                        if ( clip.name.endsWith( '_pose' ) ) {
+                            clip = THREE.AnimationUtils.subclip( clip, clip.name, 2, 3, 30 );
+                        }
+                        const action = mixer.clipAction( clip );
+                        activateAction( action );
+                        additiveActions[ name ].action = action;
+                        allActions.push( action );
+                    }
+                }
+                animate();
+            } );
+
+            renderer = new THREE.WebGLRenderer( { antialias: true } );
+            renderer.setPixelRatio( window.devicePixelRatio );
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            renderer.shadowMap.enabled = true;
+            document.body.appendChild( renderer.domElement );
+
+            // Cámara
+            camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 100 );
+            camera.position.set( - 1, 2, 3 );
+
+            const controls = new OrbitControls( camera, renderer.domElement );
+            controls.enablePan = false;
+            controls.enableZoom = false;
+            controls.target.set( 0, 1, 0 );
+            controls.update();
+
+            stats = new Stats();
+            document.body.appendChild( stats.dom );
+        }
+
+        function activateAction( action ) {
+            const clip = action.getClip();
+            const settings = baseActions[ clip.name ] || additiveActions[ clip.name ];
+            setWeight( action, settings.weight );
+            action.play();
+        }
+
+        // Esta función es necesaria, ya que animationAction.crossFadeTo() deshabilita su acción de inicio y establece
+        // la escala de tiempo de la acción de inicio a ((inicia la duración de la animación) / (finaliza la duración de la animación))
+        function setWeight( action, weight ) {
+            action.enabled = true;
+            action.setEffectiveTimeScale( 1 );
+            action.setEffectiveWeight( weight );
+        }
+
+        function animate() {
+            // Bucle de procesamiento
+            requestAnimationFrame( animate );
+            for ( let i = 0; i !== numAnimations; ++ i ) {
+                const action = allActions[ i ];
+                const clip = action.getClip();
+                const settings = baseActions[ clip.name ] || additiveActions[ clip.name ];
+                settings.weight = action.getEffectiveWeight();
+            }
+            // Se obtiene el tiempo transcurrido desde el último cuadro, utilizado para la actualización del mezclador
+            const mixerUpdateDelta = clock.getDelta();
+            // Se actualiza el mezclador de animación, el panel de estadísticas y renderice este cuadro
+            mixer.update( mixerUpdateDelta );
+            stats.update();
+            renderer.render( scene, camera );
+        }
+    </script>
 </body>
 </html>
