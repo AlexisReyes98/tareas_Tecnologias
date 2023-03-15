@@ -37,17 +37,14 @@ renderer.setClearColor(0xffffff, 0);
 // renderer.setSize(window.innerWidth, window.innerHeight); // Establece el ancho y la altura del renderizado
 
 // Inicia la configuración del sol
-let sunMaterialSkin = new THREE.TextureLoader().load("../images/Sol.jpg");
-
-let geometry = new THREE.SphereGeometry(12, 16, 16);
-let material = new THREE.MeshBasicMaterial({
-  /*color: 0xffff00,
-  emissive: 0xdd4422,*/
-  map: sunMaterialSkin
-});
-
-/* Cree una malla a partir de la estructura y el material creados anteriormente. */
-let Sun = new THREE.Mesh(geometry, material);
+// Cree una malla a partir de una estructura y material
+let Sun = new THREE.Mesh(
+  new THREE.SphereGeometry(12, 16, 16),
+  new THREE.MeshBasicMaterial({
+    color: 0xffff00,
+    emissive: 0xdd4422
+  })
+);
 
 Sun.name = "Sun";
 Sun.castShadow = true;
@@ -59,7 +56,7 @@ let opSun = new THREE.Mesh(
   new THREE.SphereGeometry(14, 16, 16),
   new THREE.MeshLambertMaterial({
     color: 0xff0000,
-    /*emissive: 0xdd4422,*/
+    emissive: 0xdd4422,
     transparent: true,
     opacity: 0.35
   })
@@ -100,7 +97,7 @@ function initStar(name, speed, angle, color, distance, volume, ringInfo) {
   let track = new THREE.Mesh(
     new THREE.RingGeometry(distance - 0.2, distance + 0.2, 64, 1),
     new THREE.MeshBasicMaterial({
-      color: 0x888888,
+      color: 0x008000,
       side: THREE.DoubleSide
     })
   );
