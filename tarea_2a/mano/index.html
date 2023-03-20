@@ -22,11 +22,9 @@
 	<script type="module">
 	    import * as THREE from 'three';
 		import { OBJLoader } from 'https://unpkg.com/three/examples/jsm//loaders/OBJLoader.js';
+        import { OrbitControls } from 'https://unpkg.com/three/examples/jsm/controls/OrbitControls.js';
 
         let container, camera, scene, renderer, object;
-		let mouseX = 0, mouseY = 0;
-		let windowHalfX = window.innerWidth / 2;
-		let windowHalfY = window.innerHeight / 2;
 
 		init();
 		animate();
@@ -58,7 +56,7 @@
 			const manager = new THREE.LoadingManager( loadModel );
 
 			const textureLoader = new THREE.TextureLoader( manager );
-			const texture = textureLoader.load( 'assets/uv_grid_opengl.jpg' );
+			const texture = textureLoader.load( 'assets/water.jpg' );
 
 			function onProgress( xhr ) {
 				if ( xhr.lengthComputable ) {
@@ -69,7 +67,7 @@
 
             function onError() {}
 			const loader = new OBJLoader( manager );
-			loader.load( 'assets/Hand_2019.obj', function ( obj ) {
+			loader.load( 'assets/Hand_1.obj', function ( obj ) {
 				object = obj;
 			}, onProgress, onError );
 
@@ -77,21 +75,20 @@
 			renderer.setPixelRatio( window.devicePixelRatio );
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			container.appendChild( renderer.domElement );
-			document.addEventListener( 'mousemove', onDocumentMouseMove );
+			
 			window.addEventListener( 'resize', onWindowResize );
+
+            const controls = new OrbitControls( camera, renderer.domElement );
+            controls.enablePan = false;
+            controls.enableZoom = false;
+            controls.target.set( 0, 1, 0 );
+            controls.update();
 		}
 
 		function onWindowResize() {
-			windowHalfX = window.innerWidth / 2;
-			windowHalfY = window.innerHeight / 2;
 			camera.aspect = window.innerWidth / window.innerHeight;
 			camera.updateProjectionMatrix();
 			renderer.setSize( window.innerWidth, window.innerHeight );
-		}
-
-		function onDocumentMouseMove( event ) {
-			mouseX = ( event.clientX - windowHalfX ) / 2;
-			mouseY = ( event.clientY - windowHalfY ) / 2;
 		}
 
 		function animate() {
@@ -100,9 +97,6 @@
 		}
 
 		function render() {
-			camera.position.x += ( mouseX - camera.position.x ) * .05;
-			camera.position.y += ( - mouseY - camera.position.y ) * .05;
-			camera.lookAt( scene.position );
 			renderer.render( scene, camera );
 		}
 	</script>
