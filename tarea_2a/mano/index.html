@@ -57,7 +57,7 @@
 			const manager = new THREE.LoadingManager( loadModel );
 
 			const textureLoader = new THREE.TextureLoader( manager );
-			const texture = textureLoader.load( 'assets/RyM08.jpg' );
+			const texture = textureLoader.load( 'assets/uv_grid_opengl.jpg' );
 
 			function onProgress( xhr ) {
 				if ( xhr.lengthComputable ) {
@@ -66,8 +66,9 @@
 				}
 			}
 
+            function onError() {}
 			const loader = new OBJLoader( manager );
-			loader.load( 'assets/hand.obj', function ( obj ) {
+			loader.load( 'assets/male02/male02.obj', function ( obj ) {
 				object = obj;
 			}, onProgress, onError );
 
