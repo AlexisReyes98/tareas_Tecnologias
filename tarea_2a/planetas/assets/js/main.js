@@ -166,24 +166,24 @@ function init() {
   // Creación de la Tierra y los otros ocho planetas.
   Earth = initStar("Earth", 0.01, 0, "rgb(0,0,255)", 40, 5);
   stars.push(Earth);
-  Mercury = initStar("shuixing", 0.02, 0, "rgb(124,131,203)", 20, 2);
+  Mercury = initStar("Mercury", 0.02, 0, "rgb(124,131,203)", 20, 2);
   stars.push(Mercury);
-  Venus = initStar("jinxing", 0.012, 0, "rgb(190,138,44)", 30, 4);
+  Venus = initStar("Venus", 0.012, 0, "rgb(190,138,44)", 30, 4);
   stars.push(Venus);
 
-  Mars = initStar("huoxing", 0.008, 0, "rgb(210,81,16)", 50, 4);
+  Mars = initStar("Mars", 0.008, 0, "rgb(210,81,16)", 50, 4);
   stars.push(Mars);
-  Jupiter = initStar("muxing", 0.006, 0, "rgb(254,208,101)", 70, 9);
+  Jupiter = initStar("Jupiter", 0.006, 0, "rgb(254,208,101)", 70, 9);
   stars.push(Jupiter);
 
-  Uranus = initStar("tianwangxing", 0.003, 0, "rgb(49,168,218)", 120, 4);
+  Uranus = initStar("Uranus", 0.003, 0, "rgb(49,168,218)", 120, 4);
   stars.push(Uranus);
 
-  Neptune = initStar("haiwangxing", 0.002, 0, "rgb(84,125,204)", 150, 3);
+  Neptune = initStar("Neptune", 0.002, 0, "rgb(84,125,204)", 150, 3);
   stars.push(Neptune);
 
   // Saturno y sus anillos
-  Saturn = initStar("tuxing", 0.005, 0, "rgb(210,140,39)", 100, 7, {
+  Saturn = initStar("Saturn", 0.005, 0, "rgb(210,140,39)", 100, 7, {
     color: "rgb(136,75,30)",
     innerRedius: 9,
     outerRadius: 11
