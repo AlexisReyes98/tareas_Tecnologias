@@ -1,4 +1,4 @@
-#  TECNOLOGIAS DE LA INFORMACION
+#  TECNOLOGÍAS DE LA INFORMACIÓN
 
 Gráficas computacionales en 3D:
 
