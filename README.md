@@ -1,4 +1,4 @@
-#  TECNOLOGÍAS DE LA INFORMACIÓN
+#  UEA TECNOLOGÍAS DE LA INFORMACIÓN
 
 Gráficas computacionales en 3D:
 
