@@ -1,0 +1,47 @@
+﻿  humanoide.cpp
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(95,37): warning C4305: 'initializing': truncation from 'double' to 'float'
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(106,21): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(116,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(130,30): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(141,31): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(153,30): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(180,36): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(187,87): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(187,68): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(187,41): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(194,27): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(196,79): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(196,61): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(196,39): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(206,34): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(211,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(212,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(219,34): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(228,28): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(237,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(243,29): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(336,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(337,23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(374,34): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(382,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(394,33): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(402,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(425,50): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(425,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(433,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(445,49): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(445,29): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(453,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(467,52): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(468,52): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(469,53): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(472,56): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(639,26): warning C4305: '-=': truncation from 'double' to 'float'
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(641,26): warning C4305: '+=': truncation from 'double' to 'float'
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(644,26): warning C4305: '+=': truncation from 'double' to 'float'
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(646,26): warning C4305: '-=': truncation from 'double' to 'float'
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(650,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(652,28): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(655,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\humanoide\humanoide.cpp(657,28): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  humanoide.vcxproj -> D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_2b\humanoide\x64\Debug\humanoide.exe
