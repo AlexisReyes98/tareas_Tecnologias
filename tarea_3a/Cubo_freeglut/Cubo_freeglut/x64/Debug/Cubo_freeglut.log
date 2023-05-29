@@ -1,8 +1,0 @@
-﻿  cubo.cpp
-D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_3a\Cubo_freeglut\Cubo_freeglut\cubo.cpp(48,12): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_3a\Cubo_freeglut\Cubo_freeglut\cubo.cpp(49,12): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_3a\Cubo_freeglut\Cubo_freeglut\cubo.cpp(68,27): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_3a\Cubo_freeglut\Cubo_freeglut\cubo.cpp(78,25): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_3a\Cubo_freeglut\Cubo_freeglut\cubo.cpp(87,26): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_3a\Cubo_freeglut\Cubo_freeglut\cubo.cpp(105,27): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-  Cubo_freeglut.vcxproj -> D:\giova\Documents\UAM\9_23-I\3-Tecnologias\tareas_Tecnologias\tarea_3a\Cubo_freeglut\x64\Debug\Cubo_freeglut.exe
