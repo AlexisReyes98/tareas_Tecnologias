@@ -1,0 +1,47 @@
+body {
+    background-color: #000000;
+    margin: 0px;
+    min-height: 100vh;
+    width: 100vw;
+    position: relative;
+    overflow: hidden;
+}
+
+#container {
+    display: none;
+    width: 100vw;
+}
+
+#info {
+    position: absolute;
+    bottom: 0;
+    min-width: 800px;
+    height: 220px;
+    color: #fff;
+    padding: 5px;
+    font-family: Verdana;
+    font-size: 2em;
+}
+
+#player {
+    display: none;
+}
+
+a:link,
+a:visited {
+    color: #ffffff;
+}
+
+a:hover {
+    color: #ff5200;
+    text-decoration: underline;
+}
+
+#chrome_experience {
+    background-image: url(asset/badge-black_black.png);
+    width: 160px;
+    height: 92px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}

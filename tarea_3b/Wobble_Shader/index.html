@@ -1,0 +1,268 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>three.js (WebGL & GLSL) - The wobble dance</title>
+    <link type="text/css" rel="stylesheet" href="css/main.css">
+    <script type="text/javascript" src="lib/ThreeExtras.js"></script>
+</head>
+<body onload="start()">
+    <div id="container"></div>
+
+    <!-- <div id="info">
+        <div id="player">
+            <audio controls="controls" autoplay="autoplay" loop="loop">
+                <source src="asset/circlesquare.mp3" />
+                <source src="asset/circlesquare.ogg" />
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+    </div>
+    view-source:https://whiteflashwhitehit.com/content/2011/02/anisotropic_webgl.html
+-->
+    <div id="chrome_experience"></div>
+
+    <!-- ----- Wooble Shader ----- -->
+    <script id="vertex_shader" type="x-shader/x-vertex">
+        attribute vec4 tangent;
+
+        uniform float noiseRate;
+        uniform vec3 lightPos;
+        uniform float wripplephase;
+
+        varying vec3 vNormal;
+        varying vec3 vTangent;
+        varying vec3 vBinormal;
+        varying vec3 vViewVec;
+        varying vec3 vPos;
+
+        varying vec4 lightDir;
+        varying vec2 vUv;
+
+        void main() {
+            vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+
+            vTangent     = normalize( normalMatrix * tangent.xyz );
+            vNormal      = normalize( normalMatrix * normal );
+            vBinormal    = cross( vNormal, vTangent ) * tangent.w;
+            vBinormal    = normalize( vBinormal );
+
+            vUv          = uv * noiseRate;
+            vViewVec.xyz = mvPosition.xyz;
+            vPos         = vec3(uv,1.0) * noiseRate;
+
+            vec4 lPosition      = modelViewMatrix * vec4( lightPos, 1.0 );
+            lightDir            = normalize(vec4( lPosition.xyz - mvPosition.xyz , 1.0));
+
+            // Aplica wobble
+
+            vec4 bVertexPosition    = mvPosition;
+            float frequency         = 0.005;
+            float wrippleScale      = 50.4;
+            bVertexPosition.x += cos(bVertexPosition.y*frequency + wripplephase) * wrippleScale;
+            bVertexPosition.y += sin(bVertexPosition.x*frequency - wripplephase) * wrippleScale;
+            bVertexPosition.z += cos(bVertexPosition.y*frequency - wripplephase) * wrippleScale;
+
+            gl_Position     = projectionMatrix * bVertexPosition;
+        }
+    </script>
+
+    <script id="fragment_shader" type="x-shader/x-fragment">
+        uniform sampler2D noise;
+        uniform vec3 gloss;
+        uniform vec3 color;
+        uniform float noiseScale;
+        uniform vec3 diffuseColor;
+
+        varying vec3 vNormal;
+        varying vec3 vTangent;
+        varying vec3 vBinormal;
+        varying vec3 vViewVec;
+
+        varying vec2 vUv;
+        varying vec3 vPos;
+
+        varying vec4 lightDir;
+
+        void main() {
+            vec3 viewVec        = normalize(vViewVec);
+            vec3 oglLightDir    = vec3(lightDir.x, lightDir.y, -lightDir.z);
+            float angle         = noiseScale * ( texture2D(noise, vUv) - 0.5).x;
+
+            float cosA, sinA;
+            sinA = sin(angle);
+            cosA = cos(angle);
+
+            vec3 tang =  sinA * vTangent + cosA * vBinormal;
+
+            // anisotropic lighting
+
+            float diffuse = clamp( dot( -oglLightDir.xyz, vNormal ), 0.0, 1.0 );
+                
+            float cs = -dot(viewVec, tang);
+            float sn = sqrt(1.0 - cs * cs);
+            float cl =  dot(oglLightDir.xyz, tang);
+            float sl = sqrt(1.0 - cl * cl);
+
+            float specular = pow( clamp( (cs * cl + sn * sl), 0.0, 1.0 ), 32.0);
+
+            vec4 color4 = vec4(color, 0.0);
+            vec4 gloss4 = vec4(gloss, 0.0);
+
+            vec4 total  = diffuse * color4 + gloss4 * specular;
+            gl_FragColor= vec4(total.rgb, 1.0);               
+        }
+    </script>
+
+    <script type="text/javascript">
+        if (!THREE.Detector.webgl) THREE.Detector.addGetWebGLMessage();
+
+        var camera, scene, renderer, container, loader;
+        var light, ambientLight, pointLight, lee;
+
+        var change = 0;
+        var change_period = 0;
+
+        var wripple_speed = 0.3;
+        var phase = 0;
+        var phaseSpeed = 0.05;
+        var phaseDirection = -1.0;
+
+        var t = 0;
+        var diameter = 1200;
+
+        var uniforms = {};
+
+        function start() {
+            init();
+            setInterval(loop, 1000 / 60);
+        }
+
+        function init() {
+            container = document.getElementById('container');
+
+            // Camara
+
+            camera = new THREE.Camera(30, window.innerWidth / window.innerHeight, 1, 10000);
+            camera.position.z = 1800;
+            camera.updateMatrix();
+
+            scene = new THREE.Scene();
+
+            // WebGl Render
+
+            try {
+                renderer = new THREE.WebGLRenderer();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.autoClear = false;
+                container.appendChild(renderer.domElement);
+            }
+            catch (e) {
+                alert(e);
+            }
+
+            // Luces
+
+            ambientLight = new THREE.AmbientLight(0xaaaaaa);
+            scene.addLight(ambientLight);
+
+            pointLight = new THREE.PointLight(0xffffff);
+            scene.addLight(pointLight);
+
+            // Shader
+
+            uniforms = {
+
+                noiseRate: { type: "f", value: 0.02200 },
+                noiseScale: { type: "f", value: 0.50265 },
+                lightPos: { type: "v3", value: pointLight.position },
+                color: { type: "c", value: new THREE.Color(0xff5200) },
+                gloss: { type: "c", value: new THREE.Color(0xc59666) },
+                wripplephase: { type: "f", value: 0.50265 },
+                diffuseColor: { type: "c", value: new THREE.Color(0xb23500) },
+
+                noise: { type: "t", value: 0, texture: ImageUtils.loadTexture('lib/noise2.jpg') }
+
+            };
+
+            var material = new THREE.MeshShaderMaterial({
+                uniforms: uniforms,
+                vertex_shader: document.getElementById('vertex_shader').textContent,
+                fragment_shader: document.getElementById('fragment_shader').textContent
+            });
+
+
+            loader = new THREE.Loader(true);
+            document.body.appendChild(loader.statusDomElement);
+            loader.loadAscii({ model: "lib/LeePerrySmith.js", callback: function (geometry) { createScene(geometry, 200, material) } });
+
+            container.style.display = 'block';
+        }
+
+        function createScene(geometry, scale, material) {
+            geometry.computeTangents();
+
+            lee = SceneUtils.addMesh(scene, geometry, scale, 0, - 50, 0, 0, 0, 0, material);
+            lee.position.z = -500;
+
+            loader.statusDomElement.style.display = "none";
+        }
+
+        function loop() {
+            t += 0.01;
+
+            if (lee) {
+                if (t > 68) {
+                    change++;
+                    if (change > change_period) {
+                        if (lee.position.z == -500) {
+                            // mouth
+                            lee.position.z = 500;
+                            lee.rotation.y = 0;
+                            lee.position.y = 50;
+                            pointLight.position.z = 600;
+                            change_period = Math.floor(Math.random() * 400) + 100;
+                        } else {
+                            lee.position.z = -500;
+                            lee.position.y = 0;
+                            pointLight.position.z = 0;
+                            change_period = Math.floor(Math.random() * 900) + 100;
+                        }
+                        change = 0;
+                    }
+                }
+
+                if (lee.position.z == -500) lee.rotation.y = t / 10;
+            }
+
+            pointLight.position.x = diameter * Math.cos(t);
+            pointLight.position.y = diameter * Math.sin(t);
+
+            // Wobble update
+
+            phaseSpeed = parseFloat(wripple_speed) / 10.0;
+            phase += phaseSpeed * phaseDirection;
+            if (Math.abs(phase) > 2 * Math.PI) phase -= 2 * Math.PI;
+
+            uniforms.wripplephase.value = phase;
+
+            // Render
+
+            renderer.clear();
+            renderer.render(scene, camera);
+        }
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-360549-7']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+</body>
+</html>
