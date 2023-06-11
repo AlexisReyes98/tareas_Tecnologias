@@ -1,18 +1,14 @@
 #  UEA TECNOLOGÍAS DE LA INFORMACIÓN
 
-Gráficas computacionales en 3D:
-
-– Programación
-
-– Modelado
-
-– Animación
-
-– Materiales, luces y cámaras
-
-– Síntesis de Imagen
-
+Principios de las gráficas computacionales en 3D:
+- Programación
+- Modelado
+- Animación
+- Materiales, luces y cámaras
+- Síntesis de Imagen
 - Post-procesamiento
+
+Programación utilizando A-Frame, Three.js, Babylon.js, OpenGL/WebGL.
 
 Repositorio con programas gráficos tridimensionales interactivos.
 
