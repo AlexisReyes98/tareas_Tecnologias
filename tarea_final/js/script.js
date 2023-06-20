@@ -1,4 +1,3 @@
-
 var BoidScene = function () {};
 
 BoidScene.prototype = {
@@ -51,16 +50,6 @@ BoidScene.prototype = {
 
     document.addEventListener( 'mousemove', this.documentMouseMoveHandler.bind(this), false );
     window.addEventListener('resize', this.windowResizeHandler.bind(this),false);
-    /* debug 
-    var materials = [];
-    for ( var j = 0; j < 6; j ++ ) {
-     materials.push( new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } ) );
-    }
-
-    this.cube = new THREE.Mesh( new THREE.CubeGeometry( 10, 10, 10, 1, 1, 1, materials ), new THREE.MeshFaceMaterial() );
-    this.cube.overdraw = true;
-    scene.add( this.cube ); 
-    // */
 
     //add scene to DOM
     boidContainer.appendChild(renderer.domElement);
@@ -96,11 +85,6 @@ BoidScene.prototype = {
         vector = new THREE.Vector3( e.clientX - offset.x - this.halfViewWidth, - e.clientY - offset.y + this.halfViewHeight, 0 );
     //TODO: the scalar is a projection scaling number that is deduced from trial & errors, will find the correct formular to convert projection later
     vector.multiplyScalar(0.87);
-
-    //debug
-    //this.cube.position = vector.clone();
-    
-    //trace(3, 'offset: ' + offset.x + 'x' + offset.y + ' - vector: ' + vector.x + 'x' + vector.y);
 
     for ( var i = 0, il = boids.length; i < il; i++ ) {
       boid = boids[ i ];
