@@ -43,3 +43,7 @@ Shaders en WebGL y Three.js:
 ![image](https://github.com/AlexisReyes98/tareas_Tecnologias/assets/72325257/2d9e6401-9849-4550-932e-df23f9c70282)
 
 ![image](https://github.com/AlexisReyes98/tareas_Tecnologias/assets/72325257/a2872992-28c5-405d-8bed-dfc387cc8c2a)
+
+Shaders y reglas de flocking en Three.js (escenario peces):
+
+![image](https://github.com/AlexisReyes98/tareas_Tecnologias/assets/72325257/c40446c6-2aa4-48ae-9a38-bab502035e43)
