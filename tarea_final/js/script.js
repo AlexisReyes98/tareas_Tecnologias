@@ -24,9 +24,6 @@ BoidScene.prototype = {
         boid = boids[ i ] = new Boid(2, 0.02);
         //the actual 3D object
         bird = birds[ i ] = new FishMesh();
-      } else {
-        boid = boids[ i ] = new Boid(4, 0.1);
-        bird = birds[ i ] = new BirdMesh();
       }
       
       boid.position.x = Math.random() * 500 - 250;
